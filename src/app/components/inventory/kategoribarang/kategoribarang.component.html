@@ -1,88 +1,112 @@
 <div class="grid">
-	<div class="col-12">
-		<div class="card">
-			<h5>DataView</h5>
-<!--			<p-dataView #dv [value]="products" [paginator]="true" [rows]="9" filterBy="name" [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">-->
-<!--				<ng-template pTemplate="header">-->
-<!--					<div class="flex flex-column md:flex-row md:justify-content-between gap-2">-->
-<!--						<p-dropdown [options]="sortOptions" placeholder="Sort By Price" (onChange)="onSortChange($event)"></p-dropdown>-->
-<!--						<span class="p-input-icon-left">-->
-<!--                            <i class="pi pi-search"></i>-->
-<!--                            <input type="search" pInputText placeholder="Search by Name" (input)="onFilter(dv, $event)">-->
-<!--                        </span>	-->
-<!--						<p-dataViewLayoutOptions></p-dataViewLayoutOptions>-->
-<!--					</div>-->
-<!--				</ng-template>-->
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toast></p-toast>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button pButton pRipple label="Tambah Kategori" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+          </div>
+        </ng-template>
 
-<!--				<ng-template let-product pTemplate="listItem">-->
-<!--					<div class="col-12">-->
-<!--						<div class="flex flex-column md:flex-row align-items-center p-3 w-full">-->
-<!--							<img [src]="'assets/demo/images/product/' + product.image" [alt]="product.name" class="my-4 md:my-0 w-9 md:w-10rem shadow-2 mr-5"/>-->
-<!--							<div class="flex-1 flex flex-column align-items-center text-center md:text-left">-->
-<!--								<div class="font-bold text-2xl">{{product.name}}</div>-->
-<!--								<div class="mb-2">{{product.description}}</div>-->
-<!--								<p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false" styleClass="mb-2"></p-rating>-->
-<!--								<div class="flex align-items-center mt-2">-->
-<!--									<i class="pi pi-tag mr-2"></i>-->
-<!--									<span class="font-semibold">{{product.category}}</span>-->
-<!--								</div>-->
-<!--							</div>-->
-<!--							<div class="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">-->
-<!--								<span class="text-2xl font-semibold mb-2 align-self-center md:align-self-end">${{product.price}}</span>-->
-<!--								<p-button icon="pi pi-shopping-cart" label="Add to Cart" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'" styleClass="mb-2 p-button-sm"></p-button>-->
-<!--								<span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>-->
-<!--							</div>-->
-<!--						</div>-->
-<!--					</div>-->
-<!--				</ng-template>-->
+        <ng-template pTemplate="right">
+          <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
+          <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>
+        </ng-template>
+      </p-toolbar>
 
-<!--				<ng-template let-product pTemplate="gridItem">-->
-<!--					<div class="col-12 md:col-4">-->
-<!--						<div class="card m-3 border-1 surface-border">-->
-<!--							<div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">-->
-<!--								<div class="flex align-items-center">-->
-<!--									<i class="pi pi-tag mr-2"></i>-->
-<!--									<span class="font-semibold">{{product.category}}</span>-->
-<!--								</div>-->
-<!--								<span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>-->
-<!--							</div>-->
-<!--							<div class="flex flex-column align-items-center text-center mb-3">-->
-<!--								<img [src]="'assets/demo/images/product/' + product.image" [alt]="product.name" class="w-9 shadow-2 my-3 mx-0"/>-->
-<!--								<div class="text-2xl font-bold">{{product.name}}</div>-->
-<!--								<div class="mb-3">{{product.description}}</div>-->
-<!--								<p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>-->
-<!--							</div>-->
-<!--							<div class="flex align-items-center justify-content-between">-->
-<!--								<span class="text-2xl font-semibold">${{product.price}}</span>-->
-<!--								<p-button icon="pi pi-shopping-cart" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'"></p-button>-->
-<!--							</div>-->
-<!--						</div>-->
-<!--					</div>-->
-<!--				</ng-template>-->
-<!--			</p-dataView>-->
-		</div>
-	</div>
+      <p-table #dt [value]="kategoris" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['namaKategori','kodeKategori','representative.name','status']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedKategoris" selectionMode="multiple" [rowHover]="true" dataKey="idKategori">
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0">Manage Kategori</h5>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."  class="w-full sm:w-auto"/>
+                        </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="kodeKategori">Kode <p-sortIcon field="kodeKategori"></p-sortIcon></th>
+            <th pSortableColumn="namaKategori">Name Kategori <p-sortIcon field="namaKategori"></p-sortIcon></th>
+            <th pSortableColumn="deskripsiKategori">Deskripsi <p-sortIcon field="deskripsiKategori"></p-sortIcon></th>
+            <th pSortableColumn="createdBy">Created By <p-sortIcon field="createdBy"></p-sortIcon></th>
+            <th pSortableColumn="createdDate">Created Date <p-sortIcon field="createdDate"></p-sortIcon></th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-kategori>
+          <tr>
+            <td style="width:20%; min-width:10rem;"><span class="p-column-title">Code</span>
+              {{kategori.kodeKategori || kategori.idKategori}}
+            </td>
+            <td style="width:20%; min-width:10rem;">
+              <span class="p-column-title">Name</span>
+              {{kategori.namaKategori}}
+            </td>
+            <td style="width:20%; min-width:8rem;">
+              <span class="p-column-title">Price</span>
+              {{kategori.deskripsiKategori}}
+            </td>
+            <td style="width:20%; min-width:8rem;">
+              <span class="p-column-title">Created By</span>
+              {{kategori.createdBy}}
+            </td>
+            <td style="width:20%; min-width:8rem;">
+              <span class="p-column-title">Created Date</span>
+              {{kategori.createdDate}}
+            </td>
+            <td>
+              <div class="flex">
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editKategori(kategori)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteKategori(kategori)"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
 
-	<div class="col-12 xl:col-8">
-		<div class="card">
-			<h5>PickList</h5>
-			<p-pickList [source]="sourceCities" [target]="targetCities" sourceHeader="From" targetHeader="To" [dragdrop]="true"
-						[responsive]="true" [sourceStyle]="{'height':'250px'}" [targetStyle]="{'height':'250px'}">
-				<ng-template let-city pTemplate="item">
-					<div>{{city.name}}</div>
-				</ng-template>
-			</p-pickList>
-		</div>
-	</div>
 
-	<div class="col-12 xl:col-4">
-		<div class="card">
-			<h5>OrderList</h5>
-			<p-orderList [value]="orderCities" header="Cities" [dragdrop]="true" [listStyle]="{'height':'250px'}">
-				<ng-template let-city pTemplate="item">
-					<div>{{city.name}}</div>
-				</ng-template>
-			</p-orderList>
-		</div>
-	</div>
+    <p-dialog [(visible)]="kategoriDialog" [style]="{width: '450px'}" header="Kategori Details" [modal]="true" class="p-fluid">
+
+      <ng-template pTemplate="content">
+        <form [formGroup]="kategoriForm">
+          <div class="field">
+            <label for="kodeKategori">Kode Kategori</label>
+            <input type="text" pInputText id="kodeKategori" formControlName="kodeKategori" [(ngModel)]="kategori.kodeKategori" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !kategori.kodeKategori}"/>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !kategori.kodeKategori">Kode Kategori is required.</small>
+          </div>
+          <div class="field">
+            <label for="namaKategori">Kategori</label>
+            <input type="text" pInputText id="namaKategori" formControlName="namaKategori" [(ngModel)]="kategori.namaKategori" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !kategori.namaKategori}"/>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !kategori.namaKategori">Name is required.</small>
+          </div>
+          <div class="field">
+            <label for="deskripsiKategori">Description</label>
+            <textarea id="deskripsiKategori" formControlName="deskripsiKategori" pInputTextarea [(ngModel)]="kategori.deskripsiKategori" required rows="3" cols="20"></textarea>
+          </div>
+        </form>
+      </ng-template>
+
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveKategori()"></button>
+      </ng-template>
+
+    </p-dialog>
+
+
+    <p-dialog [(visible)]="deleteKategoriDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="kategori">Are you sure you want to delete <b>{{kategori.namaKategori}}</b>?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteKategoriDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+      </ng-template>
+    </p-dialog>
+  </div>
 </div>
