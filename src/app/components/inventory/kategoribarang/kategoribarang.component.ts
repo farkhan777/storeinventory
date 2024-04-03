@@ -130,6 +130,7 @@ export class KategoribarangComponent implements OnInit {
     }))
       .subscribe(response => {
         console.log(response)
+
         this.kategoriDialog = false;
         this.getKategori()
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Kategori Deleted', life: 3000 });
