@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { BarangRoutingModule } from './barang-routing.module';
-import { BarangComponent } from './barang.component';
+import { PeminjamanbarangRoutingModule } from './peminjamanbarang-routing.module';
+import { PeminjamanbarangComponent } from './peminjamanbarang.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -24,7 +24,7 @@ import {KategoriService} from "../../../service/kategori.service";
 @NgModule({
   imports: [
     CommonModule,
-    BarangRoutingModule,
+    PeminjamanbarangRoutingModule,
     TableModule,
     FileUploadModule,
     FormsModule,
@@ -42,7 +42,7 @@ import {KategoriService} from "../../../service/kategori.service";
     ImageModule,
     ReactiveFormsModule
   ],
-	declarations: [BarangComponent],
+	declarations: [PeminjamanbarangComponent],
   providers: [ProductService, BarangService, KategoriService]
 })
-export class BarangModule { }
+export class PeminjamanbarangModule { }

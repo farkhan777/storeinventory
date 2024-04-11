@@ -16,10 +16,10 @@ import {IBarangPost} from "../../../interfaces/interfaces-barang/i-barang-post";
 import {IKategori} from "../../../interfaces/interfaces-kategori/i-kategori";
 
 @Component({
-    templateUrl: './barang.component.html',
+    templateUrl: './peminjamanbarang.component.html',
   providers: [MessageService]
 })
-export class BarangComponent implements OnInit {
+export class PeminjamanbarangComponent implements OnInit {
 
   submitted: boolean = false;
 

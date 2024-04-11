@@ -29,7 +29,6 @@ export class KategoribarangComponent implements OnInit {
 
   kategoris: IKategori[] = [];
 
-
   kategori: IKategori = {};
 
   selectedKategoris: IKategori[] = [];
