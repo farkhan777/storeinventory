@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { PeminjamanbarangComponent } from './peminjamanbarang.component';
-import { PeminjamanbarangRoutingModule } from './peminjamanbarang-routing.module';
+import { PermintaanbarangComponent } from './permintaanbarang.component';
+import { PermintaanbarangRoutingModule } from './permintaanbarang-routing.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { RatingModule } from 'primeng/rating';
@@ -21,11 +21,12 @@ import {KategoriService} from "../../../service/kategori.service";
 import {Router} from "@angular/router";
 import {PeminjamanbarangService} from "../../../service/peminjamanbarang.service";
 import {ImageModule} from "primeng/image";
+import {PermintaanbarangService} from "../../../service/permintaanbarang.service";
 
 @NgModule({
   imports: [
     CommonModule,
-    PeminjamanbarangRoutingModule,
+    PermintaanbarangRoutingModule,
     TableModule,
     FileUploadModule,
     FormsModule,
@@ -43,7 +44,7 @@ import {ImageModule} from "primeng/image";
     ReactiveFormsModule,
     ImageModule
   ],
-	declarations: [PeminjamanbarangComponent],
-  providers: [KategoriService, PeminjamanbarangService]
+	declarations: [PermintaanbarangComponent],
+  providers: [KategoriService, PermintaanbarangService]
 })
-export class PeminjamanbarangModule { }
+export class PermintaanbarangModule { }

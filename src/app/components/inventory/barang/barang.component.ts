@@ -103,7 +103,6 @@ export class BarangComponent implements OnInit {
         message: error.error.message,
         timestamp: error.error.timestamp
       }
-      console.log(error.status)
       if (error.status == 401) {
         this.authService.logout()
       }
@@ -111,7 +110,6 @@ export class BarangComponent implements OnInit {
     }))
       .subscribe((response: IResponseList) => {
         this.barangs = response.data
-        console.log(this.barangs)
       })
   }
 
@@ -122,7 +120,6 @@ export class BarangComponent implements OnInit {
         message: error.error.message,
         timestamp: error.error.timestamp
       }
-      console.log(error.status)
       if (error.status == 401) {
         this.authService.logout()
       }
@@ -180,12 +177,6 @@ export class BarangComponent implements OnInit {
       } : undefined
     };
 
-    console.log("Ini");
-    console.log(this.postBarang.kategoriBarang?.namaKategori);
-    console.log(this.dropdownKategori);
-    console.log(this.statusDropdown);
-    console.log(this.postBarang.kategoriBarang);
-
     this.barangDialog = true;
   }
 
@@ -204,14 +195,12 @@ export class BarangComponent implements OnInit {
 
   confirmDelete() {
     this.deleteBarangDialog = false;
-    console.log(this.barang.imageId)
     this.barangService.deleteBarang(this.barang.imageId).pipe(catchError((error: HttpErrorResponse) => {
       this.error = {
         status: true,
         message: error.error.message,
         timestamp: error.error.timestamp
       }
-      console.log(error.status)
       if (error.status == 401) {
         this.authService.logout()
       }
@@ -219,8 +208,6 @@ export class BarangComponent implements OnInit {
       return throwError(() => new Error('Error barang'))
     }))
       .subscribe(response => {
-        console.log(response)
-
         this.getBarang()
         this.barangDialog = false;
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Barang Deleted', life: 3000 });
@@ -258,7 +245,6 @@ export class BarangComponent implements OnInit {
             message: error.error.message,
             timestamp: error.error.timestamp
           }
-          console.log(error.status)
           if (error.status == 401) {
             this.authService.logout()
           }
@@ -266,8 +252,6 @@ export class BarangComponent implements OnInit {
           return throwError(() => new Error(error.message))
         }))
           .subscribe(response => {
-
-            console.log(response)
             this.barangDialog = false;
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Barang Created', life: 3000 });
             this.getBarang()
@@ -283,7 +267,6 @@ export class BarangComponent implements OnInit {
             message: error.error.message,
             timestamp: error.error.timestamp
           }
-          console.log(error.status)
           if (error.status == 401) {
             this.authService.logout()
           } else if (error.status == 400) {
@@ -293,8 +276,6 @@ export class BarangComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Barang tidak dapat disimpan', life: 3000 });
         }))
           .subscribe(response => {
-
-            console.log(response)
             this.barangDialog = false;
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Barang Created', life: 3000 });
             this.getBarang()

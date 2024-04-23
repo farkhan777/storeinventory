@@ -61,6 +61,7 @@ export class KategoribarangComponent implements OnInit {
     this.getKategori()
 
     this.cols = [
+      { field: 'nomorKategori', header: 'nomorKategori' },
       { field: 'kodeKategori', header: 'Kode' },
       { field: 'namaKategori', header: 'Kategori' },
       { field: 'deskripsiKategori', header: 'Deskripsi' },

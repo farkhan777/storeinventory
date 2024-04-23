@@ -20,13 +20,14 @@
           <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
             <h5 class="m-0">Manage Barang</h5>
             <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."  class="w-full sm:w-auto"/>
-                        </span>
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."  class="w-full sm:w-auto"/>
+            </span>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
+            <th pSortableColumn="nomorKategori">No </th>
             <th pSortableColumn="kodeBarang">Kode <p-sortIcon field="kodeBarang"></p-sortIcon></th>
             <th pSortableColumn="namaBarang">Nama <p-sortIcon field="namaBarang"></p-sortIcon></th>
             <th>Gambar</th>
@@ -40,8 +41,9 @@
             <th></th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-barang>
+        <ng-template pTemplate="body" let-barang let-i="rowIndex">
           <tr>
+            <td style="width:10%; min-width:7rem;">{{i + 1}}</td>
             <td style="width:10%; min-width:7rem;">
               <span class="p-column-title">Kode</span>
               {{barang.kodeBarang || barang.idBarang}}

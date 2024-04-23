@@ -15,18 +15,19 @@
         </ng-template>
       </p-toolbar>
 
-      <p-table #dt [value]="kategoris" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['namaKategori','kodeKategori','representative.name','status']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedKategoris" selectionMode="multiple" [rowHover]="true" dataKey="idKategori">
+      <p-table #dt [value]="kategoris" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['nomorKategori','namaKategori','kodeKategori','representative.name','status']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedKategoris" selectionMode="multiple" [rowHover]="true" dataKey="idKategori">
         <ng-template pTemplate="caption">
           <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
             <h5 class="m-0">Manage Kategori</h5>
             <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."  class="w-full sm:w-auto"/>
-                        </span>
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."  class="w-full sm:w-auto"/>
+            </span>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
+            <th pSortableColumn="nomorKategori">No </th>
             <th pSortableColumn="kodeKategori">Kode <p-sortIcon field="kodeKategori"></p-sortIcon></th>
             <th pSortableColumn="namaKategori">Name Kategori <p-sortIcon field="namaKategori"></p-sortIcon></th>
             <th pSortableColumn="deskripsiKategori">Deskripsi <p-sortIcon field="deskripsiKategori"></p-sortIcon></th>
@@ -35,9 +36,11 @@
             <th></th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-kategori>
+        <ng-template pTemplate="body" let-kategori let-i="rowIndex">
           <tr>
-            <td style="width:20%; min-width:10rem;"><span class="p-column-title">Code</span>
+            <td style="width:10%; min-width:5rem;">{{i + 1}}</td>
+            <td style="width:20%; min-width:10rem;">
+              <span class="p-column-title">Code</span>
               {{kategori.kodeKategori || kategori.idKategori}}
             </td>
             <td style="width:20%; min-width:10rem;">
@@ -52,7 +55,7 @@
               <span class="p-column-title">Created By</span>
               {{kategori.createdBy}}
             </td>
-            <td style="width:20%; min-width:8rem;">
+            <td style="width:20%; min-width:11rem;">
               <span class="p-column-title">Created Date</span>
               {{kategori.createdDate | date:'yyyy-MM-dd HH:mm:ss'}}
             </td>

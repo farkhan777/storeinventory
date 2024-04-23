@@ -1,25 +1,33 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
-
-import {IBarang} from "../../../interfaces/interfaces-barang/i-barang";
-import {BarangService} from "../../../service/barang.service";
-import {FormBuilder, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
+import {MessageService, SelectItem} from 'primeng/api';
+import {Table} from "primeng/table";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {catchError, Observable, throwError} from "rxjs";
-import {IResponseList} from "../../../interfaces/i-response-list";
+import {catchError, throwError} from "rxjs";
 import {IError} from "../../../interfaces/i-error";
+import {IResponseList} from "../../../interfaces/i-response-list";
 import {AuthService} from "../../../service/auth.service";
-import {KategoriService} from "../../../service/kategori.service";
-import {IBarangPost} from "../../../interfaces/interfaces-barang/i-barang-post";
-import {IKategori} from "../../../interfaces/interfaces-kategori/i-kategori";
+import {IPeminjamanBarang} from "../../../interfaces/interfaces-peminjaman/i-peminjaman-barang";
+import {PeminjamanbarangService} from "../../../service/peminjamanbarang.service";
+import {IPeminjamanBarangAccRej} from "../../../interfaces/interfaces-peminjaman/i-peminjaman-barang-acc-rej";
 
 @Component({
+    selector: 'app-kategori',
     templateUrl: './peminjamanbarang.component.html',
-  providers: [MessageService]
+    providers: [MessageService]
 })
 export class PeminjamanbarangComponent implements OnInit {
+
+  peminjamanDialog: boolean = false;
+
+  deletePeminjamanDialog: boolean = false;
+
+  peminjamanBarangs: IPeminjamanBarang[] = [];
+
+  peminjamanBarang: IPeminjamanBarang = {};
+
+  accRejPeminjamanBarang: IPeminjamanBarangAccRej = {};
+
+  selectedPeminjamanBarangs: IPeminjamanBarang[] = [];
 
   submitted: boolean = false;
 
@@ -27,185 +35,88 @@ export class PeminjamanbarangComponent implements OnInit {
 
   statuses: any[] = [];
 
-  kategoriesChoises: any[] = [];
-
-  barangDialog: boolean = false;
-
-  deleteBarangDialog: boolean = false;
-
-  barangs: IBarang[] = [];
-
-  barang: IBarang = {};
-
-  postBarang: IBarangPost;
-
-  dropdownKategori: any[] = []
-
-  statusDropdown: any[] = []
-
-  selectedBarangs: IBarang[] = [];
-
-  kategoris: IKategori[] = [];
-
   rowsPerPageOptions = [5, 10, 20];
-
-  // postBarang = { imageBarang: '' }; // Initialize imageBarang
-  selectedFileName = ''; // Variable to store filename
 
   error: IError;
 
-  constructor(private kategoriService: KategoriService, private authService: AuthService, private barangService: BarangService, private formBuilder : FormBuilder, private messageService: MessageService, private router: Router, private http: HttpClient) {
+  constructor( private peminjamanbarangService : PeminjamanbarangService, private authService: AuthService, private messageService: MessageService ) {
     this.error = {
       status: false,
       message: '',
       timestamp: 0
     }
-    this.postBarang = {
-      kodeBarang:"",
-      namaBarang:"",
-      hargaBarang:0,
-      stokBarang:0,
-      statusBarang:"",
-      deskripsiBarang:"",
-      kategoriBarang: undefined
+    this.accRejPeminjamanBarang = {
+      catatanAdmin: ''
     }
   }
 
   ngOnInit() {
-    this.getBarang()
 
-    this.getKategori()
+    this.getPeminjamanBarang()
 
     this.cols = [
+      { field: 'email', header: 'Email' },
+      { field: 'noHp', header: 'No Hp' },
       { field: 'kodeBarang', header: 'Kode Barang' },
-      { field: 'namaBarang', header: 'Nama' },
-      { field: 'imageBarang', header: 'Gambar' },
-      { field: 'imageId', header: 'Gambar ID' },
-      { field: 'hargaBarang', header: 'Harga' },
-      { field: 'stokBarang', header: 'Stok' },
-      { field: 'statusBarang', header: 'Status' },
-      { field: 'deskripsiBarang', header: 'Deskripsi' },
-      { field: 'kategoriBarang', header: 'Kategori' },
-      { field: 'createdBy', header: 'Created By' },
-      { field: 'createdDate', header: 'Created Date' }
-    ];
-
-    this.statuses = [
-      { label: 'INSTOCK', value: 'instock' },
-      { label: 'OUTOFSTOCK', value: 'outofstock' }
+      { field: 'namaBarang', header: 'Nama Barang' },
+      { field: 'imageBarang', header: 'Foto Barang' },
+      { field: 'tanggalPeminjaman', header: 'Tanggal Peminjaman' },
+      { field: 'tanggalPengambilan', header: 'Tanggal Pengambilan' },
+      { field: 'statusPeminjaman', header: 'Status Peminjaman' },
+      { field: 'jumlahPeminjaman', header: 'Jumlah Peminjaman' },
+      { field: 'catatanAdmin', header: 'Catatan Admin' },
     ];
   }
 
-  getBarang() {
-    this.barangService.getBarang().pipe(catchError((error: HttpErrorResponse) => {
+  getPeminjamanBarang() {
+    this.peminjamanbarangService.getPeminjamanBarang().pipe(catchError((error: HttpErrorResponse) => {
       this.error = {
         status: true,
         message: error.error.message,
         timestamp: error.error.timestamp
       }
-      console.log(error.status)
       if (error.status == 401) {
         this.authService.logout()
       }
-      return throwError(() => new Error('Error Barang'))
+      return throwError(() => new Error('Error Peminjaman Barang'))
     }))
       .subscribe((response: IResponseList) => {
-        this.barangs = response.data
-        console.log(this.barangs)
-      })
-  }
-
-  getKategori() {
-    this.kategoriService.getKategori().pipe(catchError((error: HttpErrorResponse) => {
-      this.error = {
-        status: true,
-        message: error.error.message,
-        timestamp: error.error.timestamp
-      }
-      console.log(error.status)
-      if (error.status == 401) {
-        this.authService.logout()
-      }
-      return throwError(() => new Error('Error kategori'))
-    }))
-      .subscribe((response: IResponseList) => {
-        this.kategoris = response.data
+        this.peminjamanBarangs = response.data
       })
   }
 
   openNew() {
-    this.barang = {};
+    this.peminjamanBarang = {};
     this.submitted = false;
-    this.barangDialog = true;
-
-    this.dropdownKategori = this.kategoris.map(kategori => ({
-      label: kategori.namaKategori?.toUpperCase(),
-      value: { namaKategori: kategori.namaKategori?.toLowerCase(), idKategori: kategori.idKategori }
-    }));
-
-    this.statusDropdown = this.statuses.map(status => ({
-      label: status.label?.toUpperCase(),
-      value: status.value?.toLowerCase()
-    }))
+    this.peminjamanDialog = true;
   }
 
-  deleteSelectedBarangs() {
-    this.deleteBarangDialog = true;
-  }
-
-  editBarang(iBarangPost: IBarangPost) {
-    // Find the selected category based on the idKategori of the edited barang
-    const selectedKategori = iBarangPost.kategoriBarang
-      ? this.kategoris.find(kategori => kategori.idKategori === iBarangPost.kategoriBarang!.idKategori)
-      : undefined;
-
-    // Create dropdown options for kategori
-    this.dropdownKategori = this.kategoris.map(kategori => ({
-      label: kategori.namaKategori ? kategori.namaKategori.toUpperCase() : '', // Ensure namaKategori is not undefined
-      value: { namaKategori: kategori.namaKategori ? kategori.namaKategori.toLowerCase() : '', idKategori: kategori.idKategori || '' } // Ensure idKategori is not undefined
-    }));
-
-    // Create dropdown options for status
-    this.statusDropdown = this.statuses.map(status => ({
-      label: status.label ? status.label.toUpperCase() : '', // Ensure label is not undefined
-      value: status.value ? status.value.toLowerCase() : '' // Ensure value is not undefined
-    }));
-
-    // Assign the selected category to postBarang.kategoriBarang
-    this.postBarang = {
-      ...iBarangPost,
-      kategoriBarang: selectedKategori ? {
-        namaKategori: selectedKategori.namaKategori || '',
-        idKategori: selectedKategori.idKategori || ''
-      } : undefined
+  editPeminjamanBarang(peminjamanBarangAccRej: IPeminjamanBarangAccRej) {
+    this.accRejPeminjamanBarang = {
+      idPeminjamanBarang: peminjamanBarangAccRej.idPeminjamanBarang,
+      catatanAdmin: peminjamanBarangAccRej.catatanAdmin
     };
-
-    console.log("Ini");
-    console.log(this.postBarang.kategoriBarang?.namaKategori);
-    console.log(this.dropdownKategori);
-    console.log(this.statusDropdown);
-    console.log(this.postBarang.kategoriBarang);
-
-    this.barangDialog = true;
+    this.peminjamanDialog = true;
   }
 
-
-  deleteBarang(barang: IBarang) {
-    this.deleteBarangDialog = true;
-    this.barang = { ...barang };
+  deletePeminjamanBarang(peminjamanBarang: IPeminjamanBarang) {
+    this.deletePeminjamanDialog = true;
+    this.peminjamanBarang = { ...peminjamanBarang };
   }
 
   confirmDeleteSelected() {
-    this.deleteBarangDialog = false;
-    this.barangs = this.barangs.filter(val => !this.selectedBarangs.includes(val));
-    this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Barangs Deleted', life: 3000 });
-    this.selectedBarangs = [];
+    this.deletePeminjamanDialog = false;
+    this.peminjamanBarangs = this.peminjamanBarangs.filter(val => !this.peminjamanBarangs.includes(val));
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Peminjaman Barang Deleted', life: 3000 });
+    this.selectedPeminjamanBarangs = [];
   }
 
   confirmDelete() {
-    this.deleteBarangDialog = false;
-    console.log(this.barang.imageId)
-    this.barangService.deleteBarang(this.barang.imageId).pipe(catchError((error: HttpErrorResponse) => {
+    this.deletePeminjamanDialog = false;
+    this.peminjamanBarangs = this.peminjamanBarangs.filter(val => val.idPeminjamanBarang !== this.peminjamanBarang.idPeminjamanBarang);
+    console.log("Ini masuk")
+    console.log(this.peminjamanBarang.idPeminjamanBarang)
+    this.peminjamanbarangService.deletePeminjamanBarang(this.peminjamanBarang.idPeminjamanBarang).pipe(catchError((error: HttpErrorResponse) => {
       this.error = {
         status: true,
         message: error.error.message,
@@ -215,99 +126,83 @@ export class PeminjamanbarangComponent implements OnInit {
       if (error.status == 401) {
         this.authService.logout()
       }
-      this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Kode Barang Does Not Exist', life: 3000 });
-      return throwError(() => new Error('Error barang'))
+      this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Peminjaman Barang Does Not Exist', life: 3000 });
+      return throwError(() => new Error('Error Peminjaman Barang'))
     }))
       .subscribe(response => {
-        console.log(response)
-
-        this.getBarang()
-        this.barangDialog = false;
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Barang Deleted', life: 3000 });
+        this.peminjamanDialog = false;
+        this.getPeminjamanBarang()
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Peminjaman Barang Deleted', life: 3000 });
       })
   }
 
   hideDialog() {
-    this.barangDialog = false;
+    this.peminjamanDialog = false;
     this.submitted = false;
-    this.postBarang = {
-      kodeBarang:"",
-      namaBarang:"",
-      hargaBarang:0,
-      stokBarang:0,
-      statusBarang:"",
-      deskripsiBarang:"",
-      kategoriBarang: undefined
-    }
-    this.selectedFileName = ""
   }
 
-  saveBarang() {
+  accPeminjaman() {
     this.submitted = true;
-    if (this.postBarang.namaBarang?.trim()) {
-      if (this.postBarang.idBarang) {
-        // @ts-ignore
-        const formData = new FormData();
-        if (this.postBarang.imageBarang) {
-          formData.append('imageBarang', this.postBarang.imageBarang);
+
+    if (this.accRejPeminjamanBarang.idPeminjamanBarang) {
+      this.peminjamanbarangService.handleAccPeminjamanBarang(this.accRejPeminjamanBarang, this.accRejPeminjamanBarang.idPeminjamanBarang).pipe(catchError((error: HttpErrorResponse) => {
+        this.error = {
+          status: true,
+          message: error.error.message,
+          timestamp: error.error.timestamp
         }
-        let numberIdBarang: number = Number(this.postBarang.idBarang);
-        this.barangService.updateBarang(this.postBarang, formData, numberIdBarang).pipe(catchError((error: HttpErrorResponse) => {
-          this.error = {
-            status: true,
-            message: error.error.message,
-            timestamp: error.error.timestamp
-          }
-          console.log(error.status)
-          if (error.status == 401) {
-            this.authService.logout()
-          }
-          this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Barang tidak dapat disimpan', life: 3000 });
-          return throwError(() => new Error(error.message))
-        }))
-          .subscribe(response => {
-
-            console.log(response)
-            this.barangDialog = false;
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Barang Created', life: 3000 });
-            this.getBarang()
-          })
-      } else {
-        const formData = new FormData();
-        if (this.postBarang.imageBarang) {
-          formData.append('imageBarang', this.postBarang.imageBarang);
+        console.log(error.status)
+        if (error.status == 401) {
+          this.authService.logout()
         }
-        this.barangService.saveBarang(this.postBarang, formData).pipe(catchError((error: HttpErrorResponse) => {
-          this.error = {
-            status: true,
-            message: error.error.message,
-            timestamp: error.error.timestamp
-          }
-          console.log(error.status)
-          if (error.status == 401) {
-            this.authService.logout()
-          } else if (error.status == 400) {
-            this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Semua field harus diisi', life: 3000 });
-          }
-          return throwError(() => new Error('Error kategori'))
-          this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Barang tidak dapat disimpan', life: 3000 });
+        if (error.status == 406) {
+          this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Peminjaman Barang Sudah Ditolak', life: 3000 });
+          return throwError(() => new Error('Error peminjaman barang'))
+        }
+        this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Kode Peminjaman Barang Already Exist', life: 3000 });
+          return throwError(() => new Error('Error peminjaman barang'))
         }))
-          .subscribe(response => {
-
-            console.log(response)
-            this.barangDialog = false;
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Barang Created', life: 3000 });
-            this.getBarang()
-          })
-
-      }
+        .subscribe(response => {
+          this.peminjamanDialog = false;
+          this.getPeminjamanBarang()
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Peminjaman Barang Updated', life: 3000 });
+        })
     }
   }
 
-  findIndexById(id: string): number {
+  rejPeminjaman() {
+    this.submitted = true;
+
+    if (this.accRejPeminjamanBarang.idPeminjamanBarang) {
+      this.peminjamanbarangService.handleRejPeminjamanBarang(this.accRejPeminjamanBarang, this.accRejPeminjamanBarang.idPeminjamanBarang).pipe(catchError((error: HttpErrorResponse) => {
+        this.error = {
+          status: true,
+          message: error.error.message,
+          timestamp: error.error.timestamp
+        }
+        console.log(error.status)
+        if (error.status == 401) {
+          this.authService.logout()
+        }
+        if (error.status == 406) {
+          this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Peminjaman Barang Sudah Diterima', life: 3000 });
+          return throwError(() => new Error('Error peminjaman barang'))
+        }
+        this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Kode Peminjaman Barang Already Exist', life: 3000 });
+        return throwError(() => new Error('Error peminjaman barang'))
+      }))
+        .subscribe(response => {
+          this.peminjamanDialog = false;
+          this.getPeminjamanBarang()
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Peminjaman Barang Updated', life: 3000 });
+        })
+    }
+  }
+
+  findIndexById(idPeminjamanBarang: number): number {
     let index = -1;
-    for (let i = 0; i < this.barangs.length; i++) {
-      if (this.barangs[i].idBarang === id) {
+    for (let i = 0; i < this.peminjamanBarangs.length; i++) {
+      if (this.peminjamanBarangs[i].idPeminjamanBarang === idPeminjamanBarang) {
         index = i;
         break;
       }
@@ -325,21 +220,9 @@ export class PeminjamanbarangComponent implements OnInit {
     return id;
   }
 
-  onUpload(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files[0]) {
-      this.selectedFileName = target.files[0].name;
-
-      // ... code to handle image upload and update postBarang.imageBarang ...
-    }
-    if (target.files && target.files.length > 0) {
-      const file = target.files[0];
-      this.postBarang.imageBarang = file;
-    }
-  }
-
-
   onGlobalFilter(table: Table, event: Event) {
+    console.log("Global filter value:", (event.target as HTMLInputElement).value);
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
+
 }
