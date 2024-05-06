@@ -200,6 +200,20 @@ export class PermintaanbarangComponent implements OnInit {
     }
   }
 
+  getStatusBadgeClass(status: string): string {
+    console.log(status)
+    switch (status) {
+      case 'ACCEPTED':
+        return 'product-badge status-instock';
+      case 'REJECTED':
+        return 'product-badge status-outofstock';
+      case 'PENDING':
+        return 'product-badge status-lowstock';
+      default:
+        return '';
+    }
+  }
+
   findIndexById(idPermintaanBarang: number): number {
     let index = -1;
     for (let i = 0; i < this.permintaanBarangs.length; i++) {

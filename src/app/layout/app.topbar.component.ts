@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from "./service/app.layout.service";
 import {AuthService} from "../service/auth.service";
+import {User} from "../interfaces/auth";
 
 @Component({
     selector: 'app-topbar',
@@ -24,4 +25,8 @@ export class AppTopBarComponent {
   logout() {
     this.authService.logout();
   }
+
+  isAdminLoggedIn: boolean = this.authService.isAdminLoggedIn()
+
+  isCustomerLoggedIn: boolean = this.authService.isCustomerLoggedIn()
 }

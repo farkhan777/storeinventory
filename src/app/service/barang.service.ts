@@ -46,11 +46,12 @@ export class BarangService {
 
     var url = `${this.baseUrl}/api/barang-mgmnt/v1/barang-update/${id}`;
 
-    // if (postBarang.imageBarang) {
-    //   formData.append('imageBarang', postBarang.imageBarang);
-    // }
-    console.log("Ini")
-    console.log(postBarang.imageBarang)
+    if (postBarang.stokBarang === 0) {
+      postBarang.stokBarang = "0";
+      postBarang.statusBarang = "OUTOFSTOCK"
+    } else {
+      postBarang.statusBarang = "INSTOCK"
+    }
 
     if(postBarang.kodeBarang && postBarang.namaBarang && postBarang.hargaBarang && postBarang.stokBarang && postBarang.statusBarang && postBarang.deskripsiBarang && postBarang.kategoriBarang?.idKategori){
       url += `?kodeBarang=${postBarang.kodeBarang}&namaBarang=${postBarang.namaBarang}&hargaBarang=${postBarang.hargaBarang}&stokBarang=${postBarang.stokBarang}&statusBarang=${postBarang.statusBarang}&deskripsiBarang=${postBarang.deskripsiBarang}&idKategori=${postBarang.kategoriBarang?.idKategori}`;

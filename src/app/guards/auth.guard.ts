@@ -33,6 +33,6 @@ export class PreventGuard implements CanActivate {
     if (!this.authService.isAuth()) {
       return true;
     }
-    return this.router.createUrlTree(['/']);
+    return this.router.createUrlTree(['/admin/dashboard']);
   }
 }

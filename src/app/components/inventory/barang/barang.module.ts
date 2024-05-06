@@ -20,28 +20,30 @@ import {ProductService} from "../../../service/product.service";
 import {BarangService} from "../../../service/barang.service";
 import {ImageModule} from "primeng/image";
 import {KategoriService} from "../../../service/kategori.service";
+import {ProgressSpinnerModule} from "primeng/progressspinner";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    BarangRoutingModule,
-    TableModule,
-    FileUploadModule,
-    FormsModule,
-    ButtonModule,
-    RippleModule,
-    ToastModule,
-    ToolbarModule,
-    RatingModule,
-    InputTextModule,
-    InputTextareaModule,
-    DropdownModule,
-    RadioButtonModule,
-    InputNumberModule,
-    DialogModule,
-    ImageModule,
-    ReactiveFormsModule
-  ],
+    imports: [
+        CommonModule,
+        BarangRoutingModule,
+        TableModule,
+        FileUploadModule,
+        FormsModule,
+        ButtonModule,
+        RippleModule,
+        ToastModule,
+        ToolbarModule,
+        RatingModule,
+        InputTextModule,
+        InputTextareaModule,
+        DropdownModule,
+        RadioButtonModule,
+        InputNumberModule,
+        DialogModule,
+        ImageModule,
+        ReactiveFormsModule,
+        ProgressSpinnerModule
+    ],
 	declarations: [BarangComponent],
   providers: [ProductService, BarangService, KategoriService]
 })

@@ -1,4 +1,7 @@
 <div class="grid">
+  <div class="spinner-container" *ngIf="progressSpinnerVisible">
+    <p-progressSpinner ariaLabel="loading" styleClass="custom-spinner"></p-progressSpinner>
+  </div>
   <div class="col-12">
     <div class="card px-6 py-6">
       <p-toast></p-toast>
@@ -54,7 +57,7 @@
             </td>
             <td style="width:10%; min-width:10rem;">
               <span class="p-column-title">Gambar</span>
-              <p-image [src]="barang.imageBarang" [alt]="barang.namaBarang" width="100" class="shadow-4" [preview]="true"></p-image>
+              <p-image [src]="barang.imageBarang" [alt]="barang.namaBarang" width="70" class="shadow-4" [preview]="true"></p-image>
             </td>
 
             <td style="width:10%; min-width:11rem;">
@@ -101,19 +104,20 @@
       <ng-template pTemplate="content">
 
         <div class="form-group mt-2">
-          <label for="namaBarang">Nama Barang</label>
-          <input class="form-control" type="text" pInputText id="namaBarang" [(ngModel)]="postBarang.namaBarang" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !postBarang.namaBarang}"/>
+          <label for="namaBarang" class="font-semibold">Nama Barang</label>
+          <input class="form-control mt-1" type="text" pInputText id="namaBarang" [(ngModel)]="postBarang.namaBarang" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !postBarang.namaBarang}"/>
           <small class="ng-dirty ng-invalid" *ngIf="submitted && !postBarang.namaBarang">Nama barang is required.</small>
         </div>
 
         <div class="form-group mt-2">
-          <label for="kodeBarang">Kode Barang</label>
-          <input class="form-control" type="text" pInputText id="kodeBarang" [(ngModel)]="postBarang.kodeBarang" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !postBarang.namaBarang}"/>
+          <label for="kodeBarang" class="font-semibold">Kode Barang</label>
+          <input class="form-control mt-1" type="text" pInputText id="kodeBarang" [(ngModel)]="postBarang.kodeBarang" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !postBarang.namaBarang}"/>
           <small class="ng-dirty ng-invalid" *ngIf="submitted && !postBarang.namaBarang">Kode barang is required.</small>
         </div>
 
         <div class="form-group mt-2">
-          <label for="status">Kategori</label>
+          <label for="status" class="font-semibold">Kategori</label>
+          <div class="mt-1"></div>
           <p-dropdown class="form-control" [(ngModel)]="postBarang.kategoriBarang" inputId="idKategori" optionValue="value" [options]="dropdownKategori" placeholder="Select">
             <ng-template pTemplate="selectedItem">
               <span *ngIf="postBarang && postBarang.kategoriBarang" [class]="'barang-badge status-' + postBarang.kategoriBarang.toString().toLowerCase()">{{postBarang.kategoriBarang.namaKategori}}</span>
@@ -125,19 +129,22 @@
         </div>
 
         <div class="form-group mt-2">
-          <label for="hargaBarang">Harga Barang</label>
-          <input class="form-control" type="number" pInputText inputmode="decimal" id="hargaBarang" [(ngModel)]="postBarang.hargaBarang" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !postBarang.hargaBarang}"/>
+          <label for="hargaBarang" class="font-semibold">Harga Barang</label>
+<!--          <input class="form-control" type="number" pInputText inputmode="decimal" id="hargaBarang" [(ngModel)]="postBarang.hargaBarang" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !postBarang.hargaBarang}"/>-->
+          <p-inputNumber class="form-control mt-1" id="hargaBarang" mode="decimal" [showButtons]="true" [min]="0" [(ngModel)]="postBarang.hargaBarang" [ngClass]="{'ng-invalid ng-dirty' : submitted && !postBarang.hargaBarang}"></p-inputNumber>
           <small class="ng-dirty ng-invalid" *ngIf="submitted && !postBarang.hargaBarang">Harga barang is required.</small>
         </div>
 
         <div class="form-group mt-2">
-          <label for="stokBarang">Stok Barang</label>
-          <input class="form-control" type="number" pInputText inputmode="decimal" id="stokBarang" [(ngModel)]="postBarang.stokBarang" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !postBarang.stokBarang}"/>
-          <small class="ng-dirty ng-invalid" *ngIf="submitted && !postBarang.hargaBarang">Stok barang is required.</small>
+          <label for="stokBarang" class="font-semibold">Stok Barang</label>
+<!--          <input class="form-control" type="number" pInputText inputmode="decimal" id="stokBarang" [(ngModel)]="postBarang.stokBarang" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !postBarang.stokBarang}"/>-->
+          <p-inputNumber class="form-control mt-1" id="stokBarang" mode="decimal" [showButtons]="true" [min]="0" [(ngModel)]="postBarang.stokBarang" [ngClass]="{'ng-invalid ng-dirty' : submitted && !postBarang.stokBarang}"></p-inputNumber>
+          <small class="ng-dirty ng-invalid" *ngIf="submitted && !postBarang.stokBarang">Stok barang is required.</small>
         </div>
 
         <div class="form-group mt-2">
-          <label for="status">Status Barang</label>
+          <label for="status" class="font-semibold">Status Barang</label>
+          <div class="mt-1"></div>
           <p-dropdown class="form-control" [(ngModel)]="postBarang.statusBarang" inputId="statusBarang" optionValue="label" [options]="statusDropdown" placeholder="Select">
             <ng-template pTemplate="selectedItem">
               <span *ngIf="postBarang && postBarang.statusBarang" [class]="'product-badge status-' + postBarang.statusBarang.toString().toLowerCase()">{{postBarang.statusBarang}}</span>
@@ -149,12 +156,13 @@
         </div>
 
         <div class="form-group mt-2">
-          <label for="deskripsiBarang">Deskripsi Barang</label>
-          <textarea class="form-control" id="deskripsiBarang" pInputTextarea [(ngModel)]="postBarang.deskripsiBarang" required rows="3" cols="20"></textarea>
+          <label for="deskripsiBarang" class="font-semibold">Deskripsi Barang</label>
+          <textarea class="form-control mt-1" id="deskripsiBarang" pInputTextarea [(ngModel)]="postBarang.deskripsiBarang" required rows="3" cols="20"></textarea>
         </div>
 
         <div class="form-group mt-2">
-          <label for="imageBarang">Upload Gambar</label>
+          <label for="imageBarang" class="font-semibold">Upload Gambar</label>
+          <div class="mt-1"></div>
           <p-button label="Choose File" icon="pi pi-upload" (click)="fileInput.click()"></p-button>
           <input type="file" #fileInput style="display: none" id="imageBarang" name="imageBarang"
                  accept=".jpg,.jpeg,.png" (change)="onUpload($event)">

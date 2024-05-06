@@ -14,9 +14,11 @@ import {AuthService} from "../../../service/auth.service";
 import {KategoriService} from "../../../service/kategori.service";
 import {IBarangPost} from "../../../interfaces/interfaces-barang/i-barang-post";
 import {IKategori} from "../../../interfaces/interfaces-kategori/i-kategori";
+import {finalize} from "rxjs/operators";
 
 @Component({
     templateUrl: './barang.component.html',
+    styleUrls: ['barang.component.css'],
   providers: [MessageService]
 })
 export class BarangComponent implements OnInit {
@@ -52,6 +54,8 @@ export class BarangComponent implements OnInit {
   // postBarang = { imageBarang: '' }; // Initialize imageBarang
   selectedFileName = ''; // Variable to store filename
 
+  progressSpinnerVisible: boolean = false;
+
   error: IError;
 
   constructor(private kategoriService: KategoriService, private authService: AuthService, private barangService: BarangService, private formBuilder : FormBuilder, private messageService: MessageService, private router: Router, private http: HttpClient) {
@@ -61,13 +65,7 @@ export class BarangComponent implements OnInit {
       timestamp: 0
     }
     this.postBarang = {
-      kodeBarang:"",
-      namaBarang:"",
-      hargaBarang:0,
-      stokBarang:0,
-      statusBarang:"",
-      deskripsiBarang:"",
-      kategoriBarang: undefined
+
     }
   }
 
@@ -137,7 +135,7 @@ export class BarangComponent implements OnInit {
 
     this.dropdownKategori = this.kategoris.map(kategori => ({
       label: kategori.namaKategori?.toUpperCase(),
-      value: { namaKategori: kategori.namaKategori?.toLowerCase(), idKategori: kategori.idKategori }
+      value: { namaKategori: kategori.namaKategori?.toUpperCase(), idKategori: kategori.idKategori }
     }));
 
     this.statusDropdown = this.statuses.map(status => ({
@@ -218,19 +216,15 @@ export class BarangComponent implements OnInit {
     this.barangDialog = false;
     this.submitted = false;
     this.postBarang = {
-      kodeBarang:"",
-      namaBarang:"",
-      hargaBarang:0,
-      stokBarang:0,
-      statusBarang:"",
-      deskripsiBarang:"",
-      kategoriBarang: undefined
+
     }
     this.selectedFileName = ""
   }
 
   saveBarang() {
+    this.progressSpinnerVisible = true;
     this.submitted = true;
+
     if (this.postBarang.namaBarang?.trim()) {
       if (this.postBarang.idBarang) {
         // @ts-ignore
@@ -250,7 +244,11 @@ export class BarangComponent implements OnInit {
           }
           this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Barang tidak dapat disimpan', life: 3000 });
           return throwError(() => new Error(error.message))
-        }))
+        }),
+          finalize(() => {
+            this.progressSpinnerVisible = false;
+          })
+        )
           .subscribe(response => {
             this.barangDialog = false;
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Barang Created', life: 3000 });
@@ -274,7 +272,11 @@ export class BarangComponent implements OnInit {
           }
           return throwError(() => new Error('Error kategori'))
           this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Barang tidak dapat disimpan', life: 3000 });
-        }))
+        }),
+          finalize(() => {
+            this.progressSpinnerVisible = false;
+          })
+        )
           .subscribe(response => {
             this.barangDialog = false;
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Barang Created', life: 3000 });

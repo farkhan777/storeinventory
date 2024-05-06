@@ -31,12 +31,13 @@ export class PeminjamanbarangService {
     return this.http.put(`${this.baseUrl}/api/pinjam-mgmnt/v1/adm-req-pinjam-handle-acc/${id}`, updatePeminjaman, {headers})
   }
 
-  handleRejPeminjamanBarang(updatePeminjaman: any, id: number) {
+  handleRejPeminjamanBarang(updatePeminjaman: any, id: number, idBarang: string | undefined) {
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + this.authService.getToken()
     }
-    return this.http.put(`${this.baseUrl}/api/pinjam-mgmnt/v1/adm-req-pinjam-handle-rej/${id}`, updatePeminjaman, {headers})
+
+    return this.http.put(`${this.baseUrl}/api/pinjam-mgmnt/v1/adm-req-pinjam-handle-rej/${id}/${Number(idBarang)}`, updatePeminjaman, {headers})
   }
 
   deletePeminjamanBarang(id?: number) {

@@ -76,17 +76,17 @@
       <ng-template pTemplate="content">
         <form [formGroup]="kategoriForm">
           <div class="field">
-            <label for="kodeKategori">Kode Kategori</label>
+            <label for="kodeKategori" class="font-semibold">Kode Kategori</label>
             <input type="text" pInputText id="kodeKategori" formControlName="kodeKategori" [(ngModel)]="kategori.kodeKategori" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !kategori.kodeKategori}"/>
             <small class="ng-dirty ng-invalid" *ngIf="submitted && !kategori.kodeKategori">Kode Kategori is required.</small>
           </div>
           <div class="field">
-            <label for="namaKategori">Kategori</label>
+            <label for="namaKategori" class="font-semibold">Kategori</label>
             <input type="text" pInputText id="namaKategori" formControlName="namaKategori" [(ngModel)]="kategori.namaKategori" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !kategori.namaKategori}"/>
             <small class="ng-dirty ng-invalid" *ngIf="submitted && !kategori.namaKategori">Name is required.</small>
           </div>
           <div class="field">
-            <label for="deskripsiKategori">Description</label>
+            <label for="deskripsiKategori" class="font-semibold">Description</label>
             <textarea id="deskripsiKategori" formControlName="deskripsiKategori" pInputTextarea [(ngModel)]="kategori.deskripsiKategori" required rows="3" cols="20"></textarea>
           </div>
         </form>

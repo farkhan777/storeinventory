@@ -94,7 +94,8 @@ export class PeminjamanbarangComponent implements OnInit {
   editPeminjamanBarang(peminjamanBarangAccRej: IPeminjamanBarangAccRej) {
     this.accRejPeminjamanBarang = {
       idPeminjamanBarang: peminjamanBarangAccRej.idPeminjamanBarang,
-      catatanAdmin: peminjamanBarangAccRej.catatanAdmin
+      catatanAdmin: peminjamanBarangAccRej.catatanAdmin,
+      ltBarang: peminjamanBarangAccRej.ltBarang
     };
     this.peminjamanDialog = true;
   }
@@ -145,7 +146,13 @@ export class PeminjamanbarangComponent implements OnInit {
     this.submitted = true;
 
     if (this.accRejPeminjamanBarang.idPeminjamanBarang) {
-      this.peminjamanbarangService.handleAccPeminjamanBarang(this.accRejPeminjamanBarang, this.accRejPeminjamanBarang.idPeminjamanBarang).pipe(catchError((error: HttpErrorResponse) => {
+
+      const requestBody = {
+        idPeminjamanBarang: this.accRejPeminjamanBarang.idPeminjamanBarang,
+        catatanAdmin: this.accRejPeminjamanBarang.catatanAdmin
+      };
+
+      this.peminjamanbarangService.handleAccPeminjamanBarang(requestBody, this.accRejPeminjamanBarang.idPeminjamanBarang).pipe(catchError((error: HttpErrorResponse) => {
         this.error = {
           status: true,
           message: error.error.message,
@@ -156,7 +163,7 @@ export class PeminjamanbarangComponent implements OnInit {
           this.authService.logout()
         }
         if (error.status == 406) {
-          this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Peminjaman Barang Sudah Ditolak', life: 3000 });
+          this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Peminjaman Barang Sudah Ditolak/Diterima', life: 3000 });
           return throwError(() => new Error('Error peminjaman barang'))
         }
         this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Kode Peminjaman Barang Already Exist', life: 3000 });
@@ -174,7 +181,18 @@ export class PeminjamanbarangComponent implements OnInit {
     this.submitted = true;
 
     if (this.accRejPeminjamanBarang.idPeminjamanBarang) {
-      this.peminjamanbarangService.handleRejPeminjamanBarang(this.accRejPeminjamanBarang, this.accRejPeminjamanBarang.idPeminjamanBarang).pipe(catchError((error: HttpErrorResponse) => {
+
+      let idBarang: string | undefined = "0"
+
+      if (this.accRejPeminjamanBarang.ltBarang) {
+        idBarang = this.accRejPeminjamanBarang.ltBarang[0]?.idBarang
+      }
+
+      const requestBody = {
+        idPeminjamanBarang: this.accRejPeminjamanBarang.idPeminjamanBarang,
+        catatanAdmin: this.accRejPeminjamanBarang.catatanAdmin
+      };
+      this.peminjamanbarangService.handleRejPeminjamanBarang(requestBody, this.accRejPeminjamanBarang.idPeminjamanBarang, idBarang).pipe(catchError((error: HttpErrorResponse) => {
         this.error = {
           status: true,
           message: error.error.message,
@@ -185,7 +203,7 @@ export class PeminjamanbarangComponent implements OnInit {
           this.authService.logout()
         }
         if (error.status == 406) {
-          this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Peminjaman Barang Sudah Diterima', life: 3000 });
+          this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Peminjaman Barang Sudah Ditolak/Diterima', life: 3000 });
           return throwError(() => new Error('Error peminjaman barang'))
         }
         this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Kode Peminjaman Barang Already Exist', life: 3000 });
@@ -196,6 +214,19 @@ export class PeminjamanbarangComponent implements OnInit {
           this.getPeminjamanBarang()
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Peminjaman Barang Updated', life: 3000 });
         })
+    }
+  }
+
+  getStatusBadgeClass(status: string): string {
+    switch (status) {
+      case 'ACCEPTED':
+        return 'product-badge status-instock';
+      case 'REJECTED':
+        return 'product-badge status-outofstock';
+      case 'PENDING':
+        return 'product-badge status-lowstock';
+      default:
+        return '';
     }
   }
 

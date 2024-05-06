@@ -81,9 +81,12 @@ export class LoginComponent {
           console.log(response.data.akses.namaAkses)
           if (response.data.akses.namaAkses == "superadmin" || response.data.akses.namaAkses == "admin") {
             this.authService.setAuth(response.data.token);
-            this.router.navigate(['/'])
+            this.authService.setRole(response.data.akses.namaAkses)
+            this.router.navigate(['/admin/dashboard'])
           } else if (response.data.akses.namaAkses == "customer") {
-            this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Login Failed', life: 3000 });
+            this.authService.setAuth(response.data.token);
+            this.authService.setRole(response.data.akses.namaAkses)
+            this.router.navigate(['/'])
           }
           else {
             this.messageService.add({ severity: 'error', summary: 'Failed', detail: 'Login Failed', life: 3000 });
@@ -91,6 +94,8 @@ export class LoginComponent {
         })
     }
   }
+
+
 
   protected readonly onsubmit = onsubmit;
 }

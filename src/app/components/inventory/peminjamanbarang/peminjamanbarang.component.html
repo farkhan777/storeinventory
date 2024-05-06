@@ -50,7 +50,7 @@
             </td>
             <td style="width:10%; min-width:10rem;">
               <span class="p-column-title">Foto Barang</span>
-              <p-image [src]="peminjamanBarang.ltBarang[0].imageBarang" [alt]="peminjamanBarang.ltBarang.namaBarang" width="100" class="shadow-4" [preview]="true"></p-image>
+              <p-image [src]="peminjamanBarang.ltBarang[0].imageBarang" [alt]="peminjamanBarang.ltBarang.namaBarang" width="70" class="shadow-4" [preview]="true"></p-image>
             </td>
             <td style="width:20%; min-width:15rem;">
               <span class="p-column-title">Tanggal Peminjaman</span>
@@ -62,13 +62,13 @@
             </td>
             <td style="width:20%; min-width: 15rem;">
               <span class="p-column-title">Status</span>
-              <span [class]="'product-badge status-' + (peminjamanBarang.statusPeminjaman ? peminjamanBarang.statusPeminjaman.toLowerCase() : '')">{{peminjamanBarang.statusPeminjaman}}</span>
+              <span [ngClass]="getStatusBadgeClass(peminjamanBarang.statusPeminjaman)">{{peminjamanBarang.statusPeminjaman}}</span>
             </td>
             <td style="width:10%; min-width:15rem;">
               <span class="p-column-title">Jumlah Peminjaman</span>
               {{peminjamanBarang.jumlahPeminjaman}}
             </td>
-            <td style="width:10%; min-width: 15rem;">
+            <td style="width:10%; min-width: 13rem;">
               <span class="p-column-title">Catatan Admin</span>
               {{peminjamanBarang.catatanAdmin}}
             </td>

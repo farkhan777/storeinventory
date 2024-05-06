@@ -7,13 +7,20 @@ import { AuthGuard, PreventGuard } from './guards/auth.guard';
 @NgModule({
   imports: [
     RouterModule.forRoot([
-      { path: 'auth', loadChildren: () => import('./components/auth/auth.module').then(m => m.AuthModule),
+      {
+        path: 'auth', loadChildren: () => import('./components/auth/auth.module').then(m => m.AuthModule),
         canActivate: [PreventGuard]
       },
       {
-        path: '', component: AppLayoutComponent,
+        path: '', component: AppLayoutComponent, canActivate: [AuthGuard],
         children: [
-          {path: '', loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule), canActivate: [AuthGuard]},
+          {path: 'home', loadChildren: () => import('./components/home/home.module').then(m => m.HomeModule), canActivate: [AuthGuard]}
+        ]
+      },
+      {
+        path: 'admin', component: AppLayoutComponent, canActivate: [AuthGuard],
+        children: [
+          {path: 'dashboard', loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule), canActivate: [AuthGuard]},
           {path: 'inventory', loadChildren: () => import('./components/inventory/inventory.module').then(m => m.InventoryModule), canActivate: [AuthGuard]},
         ],
       },

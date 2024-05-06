@@ -36,9 +36,9 @@
               </div>
               <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)">Forgot password?</a>
             </div>
-            <button (click)="loginUser()" pButton pRipple label="Sign In" class="w-full p-3 text-xl" [disabled]="loginForm.invalid" type="button" [routerLink]="['/']"></button>
+            <button (click)="loginUser()" pButton pRipple label="Sign In" class="w-full p-3 text-xl" [disabled]="loginForm.invalid" type="button" [routerLink]="['/admin/dashboard']"></button>
             <div class="flex align-items-center justify-content-center mt-5">
-              <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)">Don't have account? Register Here</a>
+              <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)" [routerLink]="['/auth/register']">Don't have account? Register Here</a>
             </div>
           </form>
         </div>
