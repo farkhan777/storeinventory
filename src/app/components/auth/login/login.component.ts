@@ -9,10 +9,12 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {ISignInResponse} from "../../../interfaces/interfaces-auth/i-signin-response";
 import {MessageService} from "primeng/api";
 import {NavigationEnd, Router} from "@angular/router";
+import {finalize} from "rxjs/operators";
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
+    styleUrls: ['login.component.css'],
     providers: [MessageService],
     styles: [`
         :host ::ng-deep .pi-eye,
@@ -25,7 +27,11 @@ import {NavigationEnd, Router} from "@angular/router";
 })
 export class LoginComponent {
   valCheck: string[] = ['remember'];
+
+  progressSpinnerVisible: boolean = false;
+
   user: ISignin | undefined;
+
   error: ISignInError;
 
   loginForm = this.formBuilder.group({
@@ -61,6 +67,7 @@ export class LoginComponent {
 
   loginUser() {
     console.log('here')
+    this.progressSpinnerVisible = true;
     if (this.loginForm.valid ) {
       this.user = {
         username: this.loginForm.get('username')?.value as string,
@@ -74,7 +81,11 @@ export class LoginComponent {
           timestamp: error.error.timestamp
         }
         return throwError(() => new Error('Error login'))
-      }))
+      }),
+        finalize(() => {
+          this.progressSpinnerVisible = false;
+        })
+      )
         .subscribe((response: ISignInResponse) => {
           console.log(this.user)
           console.log(response)

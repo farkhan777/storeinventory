@@ -12,6 +12,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {ISignup} from "../../../interfaces/interfaces-auth/i-signup";
 import {ISignupError} from "../../../interfaces/interfaces-auth/i-signup-error";
 import Swal from "sweetalert2";
+import {finalize} from "rxjs/operators";
 
 @Component({
     selector: 'app-register',
@@ -29,7 +30,11 @@ import Swal from "sweetalert2";
 })
 export class RegisterComponent {
   valCheck: string[] = ['remember'];
+
+  progressSpinnerVisible: boolean = false;
+
   user: ISignup | undefined;
+
   error: ISignupError;
 
   registerForm = this.formBuilder.group({
@@ -59,6 +64,7 @@ export class RegisterComponent {
   // }
 
   registerUser() {
+    this.progressSpinnerVisible = true;
     if (this.registerForm.valid ) {
       this.user = {
         username: this.registerForm.get('username')?.value as string,
@@ -82,7 +88,11 @@ export class RegisterComponent {
           timer: 3000
         })
         return throwError(() => new Error('Error register'))
-      }))
+      }),
+        finalize(() => {
+          this.progressSpinnerVisible = false;
+        })
+      )
         .subscribe((response: ISignInResponse) => {
             console.log("Masuk sini")
             Swal.fire({

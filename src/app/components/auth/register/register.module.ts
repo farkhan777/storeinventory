@@ -9,6 +9,7 @@ import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 import {ToastModule} from "primeng/toast";
 import {CalendarModule} from "primeng/calendar";
+import {ProgressSpinnerModule} from "primeng/progressspinner";
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import {CalendarModule} from "primeng/calendar";
     PasswordModule,
     ReactiveFormsModule,
     ToastModule,
-    CalendarModule
+    CalendarModule,
+    ProgressSpinnerModule
   ],
     declarations: [RegisterComponent]
 })

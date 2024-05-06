@@ -8,19 +8,21 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 import {ToastModule} from "primeng/toast";
+import {ProgressSpinnerModule} from "primeng/progressspinner";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    LoginRoutingModule,
-    ButtonModule,
-    CheckboxModule,
-    InputTextModule,
-    FormsModule,
-    PasswordModule,
-    ReactiveFormsModule,
-    ToastModule
-  ],
+    imports: [
+        CommonModule,
+        LoginRoutingModule,
+        ButtonModule,
+        CheckboxModule,
+        InputTextModule,
+        FormsModule,
+        PasswordModule,
+        ReactiveFormsModule,
+        ToastModule,
+        ProgressSpinnerModule
+    ],
     declarations: [LoginComponent]
 })
 export class LoginModule { }
